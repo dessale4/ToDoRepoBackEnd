@@ -1,5 +1,6 @@
 package com.intouchup.RevaToDo.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,26 +17,20 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "Item_TBL")
+@Table(name = "Role_TBL")
 @Builder
 @EntityListeners(AuditingEntityListener.class)
-public class Item {
+public class Role {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String name;
-    private String category;
-    @ManyToOne
-    private User owner;
-    @OneToMany(mappedBy = "item")
-//    @Column(name = "subItems")
-    private List<SubItem> subItems;
-    private LocalDateTime fromTime;
-    private LocalDateTime toTime;
-    private Boolean done;
+    @ManyToMany(mappedBy = "roles")//mapping table will be created from User side only
+//    @JsonIgnore
+    private List<User> users;
     @CreatedDate
     @Column(nullable = false, updatable = false)
-    private LocalDateTime  createdDate;
+    private LocalDateTime createdDate;
     @LastModifiedDate
     @Column(insertable = false)
     private LocalDateTime  lastModifiedDate;
