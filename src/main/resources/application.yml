@@ -1,8 +1,8 @@
 #debug: true
 spring:
-  security:
-    user:
-      password: "test"
+#  security:
+#    user:
+#      password: "test"
   h2:
     console:
       enabled: true
@@ -24,4 +24,14 @@ spring:
       format_sql: true
 #    database-platform: org.hibernate.community.dialect.SQLiteDialect
     show-sql: true
+
+#Custom properties
+application:
+  security:
+    jwt:
+      secret_key: exSRp86C5hvwE8RvcLObLzk0MvJElfXPOpWDWqkU+nw=
+      expiration: 816400000 #1 day
+      refresh_token:
+        secret_key: o4ZaO5wwpAYep8S2fkxcR79AXS6nxOW8PNfaeDjSURs=
+        expiration: 259200000 #3 days
 

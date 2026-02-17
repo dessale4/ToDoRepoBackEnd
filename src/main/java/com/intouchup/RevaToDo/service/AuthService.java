@@ -1,15 +1,24 @@
 package com.intouchup.RevaToDo.service;
 
+import com.intouchup.RevaToDo.auth.AuthenticationRequest;
+import com.intouchup.RevaToDo.auth.AuthenticationResponse;
 import com.intouchup.RevaToDo.entity.Item;
 import com.intouchup.RevaToDo.entity.User;
+import com.intouchup.RevaToDo.repository.RoleRepository;
 import com.intouchup.RevaToDo.repository.UserRepository;
-import com.intouchup.RevaToDo.reqDTO.AuthRequest;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
+import com.intouchup.RevaToDo.auth.RegistrationRequest;
+import com.intouchup.RevaToDo.security.JwtService;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.text.ParseException;
+import java.util.HashMap;
 import java.util.List;
 
 @Service
@@ -18,18 +27,42 @@ import java.util.List;
 @Transactional
 public class AuthService {
     private final UserRepository userRepository;
-    public User register(AuthRequest authRequest) {
+    private final RoleRepository roleRepository;
+    private final PasswordEncoder passwordEncoder;
+
+
+    private final AuthenticationManager authenticationManager;
+    private final JwtService jwtService;
+
+    public String register(RegistrationRequest registrationRequest) {
         Item item = Item.builder()
                 .name("Test")
                 .build();
-//        User registeringUser = User.builder().build();
         User registeringUser = User.builder()
-                .firstName(authRequest.getFirstName())
-                .lastName(authRequest.getLastName())
-                .email(authRequest.getEmail())
-                .password(authRequest.getPassword())
+                .firstName(registrationRequest.getFirstName())
+                .lastName(registrationRequest.getLastName())
+                .email(registrationRequest.getEmail())
+                .password(passwordEncoder.encode(registrationRequest.getPassword()))
                 .toDoes(List.of(item))
                 .build();
-        return userRepository.save(registeringUser);
+        userRepository.save(registeringUser);
+        return "Your Registration is Successful";
+    }
+
+    public AuthenticationResponse authenticate(AuthenticationRequest request, HttpServletResponse response) throws ParseException {
+        User storedUser = userRepository.findByEmail(request.getEmail()).orElseThrow(() -> new UsernameNotFoundException("No account with email " + request.getEmail()));
+
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        request.getEmail(),
+                        request.getPassword()
+                )
+        );
+        var claims = new HashMap<String, Object>();
+        claims.put("fullName", storedUser.fullName());
+        var jwtAccessToken = jwtService.generateToken(claims, storedUser, false);
+        return AuthenticationResponse.builder()
+                .jwtToken(jwtAccessToken)
+                .build();
     }
 }

@@ -31,11 +31,15 @@ public class User implements UserDetails, Principal {
     private Integer id;
     private String firstName;
     private String lastName;
+    @Column(nullable = false, unique = true)
     private String email;
     private String password;
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
 //    @Column(name = "toDoes" )
     private List<Item> toDoes;
+    public String fullName(){
+        return firstName + " " + lastName;
+    }
     @CreatedDate
     @Column(nullable = false, updatable = false)
     private LocalDateTime  createdDate;

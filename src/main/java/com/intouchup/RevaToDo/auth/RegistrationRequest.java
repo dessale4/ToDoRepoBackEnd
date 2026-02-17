@@ -1,4 +1,4 @@
-package com.intouchup.RevaToDo.reqDTO;
+package com.intouchup.RevaToDo.auth;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class AuthRequest {
+public class RegistrationRequest {
     @NotBlank
     private String firstName;
     @NotBlank
