@@ -35,7 +35,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     private UserDetailsService userDetailsService;
     @Autowired
     @Qualifier("handlerExceptionResolver")
-    private HandlerExceptionResolver exceptionResolver;
+    private HandlerExceptionResolver exceptionResolver;//forwards the thrown exception to GlobalExceptionHandler
 
     @Override
     protected void doFilterInternal(
@@ -65,7 +65,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                         .orElse(null);
 
             } else {
-                log.info("not a jwt Auth => " + request.getServletPath());
+                log.info("not a jwt Auth => " + request.getServletPath() +" ===> "+authHeader);
                 exceptionResolver.resolveException(request, response, null, new RuntimeException("Access not allowed"));
                 return;
             }

@@ -2,7 +2,7 @@ package com.intouchup.RevaToDo.service;
 
 import com.intouchup.RevaToDo.auth.AuthenticationRequest;
 import com.intouchup.RevaToDo.auth.AuthenticationResponse;
-import com.intouchup.RevaToDo.entity.Item;
+import com.intouchup.RevaToDo.entity.Role;
 import com.intouchup.RevaToDo.entity.User;
 import com.intouchup.RevaToDo.repository.RoleRepository;
 import com.intouchup.RevaToDo.repository.UserRepository;
@@ -35,18 +35,18 @@ public class AuthService {
     private final JwtService jwtService;
 
     public String register(RegistrationRequest registrationRequest) {
-        Item item = Item.builder()
-                .name("Test")
-                .build();
+        Role userRole = roleRepository.findByName("User").orElse(Role.builder()
+                .name("User")
+                .build());
         User registeringUser = User.builder()
                 .firstName(registrationRequest.getFirstName())
                 .lastName(registrationRequest.getLastName())
                 .email(registrationRequest.getEmail())
                 .password(passwordEncoder.encode(registrationRequest.getPassword()))
-                .toDoes(List.of(item))
+                .roles(List.of(userRole))
                 .build();
-        userRepository.save(registeringUser);
-        return "Your Registration is Successful";
+         userRepository.save(registeringUser);
+        return  "Your Registration is Successful";
     }
 
     public AuthenticationResponse authenticate(AuthenticationRequest request, HttpServletResponse response) throws ParseException {
@@ -63,6 +63,7 @@ public class AuthService {
         var jwtAccessToken = jwtService.generateToken(claims, storedUser, false);
         return AuthenticationResponse.builder()
                 .jwtToken(jwtAccessToken)
+                .loggedUser(storedUser)
                 .build();
     }
 }

@@ -35,19 +35,22 @@ public class User implements UserDetails, Principal {
     private String email;
     private String password;
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
-//    @Column(name = "toDoes" )
-    private List<Item> toDoes;
-    public String fullName(){
+//    @JsonManagedReference//to prevent cyclic dependence
+    private List<Task> toDoes;
+
+    public String fullName() {
         return firstName + " " + lastName;
     }
+
     @CreatedDate
     @Column(nullable = false, updatable = false)
-    private LocalDateTime  createdDate;
+    private LocalDateTime createdDate;
     @LastModifiedDate
     @Column(insertable = false)
-    private LocalDateTime  lastModifiedDate;
-    @ManyToMany(fetch = FetchType.EAGER)
+    private LocalDateTime lastModifiedDate;
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<Role> roles;
+
     @Override
     public String getName() {
         return email;
@@ -56,7 +59,7 @@ public class User implements UserDetails, Principal {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return this.roles.stream()
-                .map(r-> new SimpleGrantedAuthority(r.getName()))
+                .map(r -> new SimpleGrantedAuthority(r.getName()))
                 .collect(Collectors.toList());
     }
 
@@ -79,6 +82,7 @@ public class User implements UserDetails, Principal {
     public boolean isCredentialsNonExpired() {
         return true;
     }
+
     @Override
     public boolean isEnabled() {
         return true;

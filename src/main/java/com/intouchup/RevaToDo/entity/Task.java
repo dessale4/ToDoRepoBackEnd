@@ -19,17 +19,18 @@ import java.util.List;
 @Table(name = "Item_TBL")
 @Builder
 @EntityListeners(AuditingEntityListener.class)
-public class Item {
+public class Task {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String name;
     private String category;
     @ManyToOne
+    @JoinColumn(name = "user_id")
     private User owner;
-    @OneToMany(mappedBy = "item")
-//    @Column(name = "subItems")
-    private List<SubItem> subItems;
+    @OneToMany(mappedBy = "task", cascade = CascadeType.ALL)
+//    @JsonManagedReference //to prevent cyclic dependence
+    private List<SubTask> subTasks;
     private LocalDateTime fromTime;
     private LocalDateTime toTime;
     private Boolean done;

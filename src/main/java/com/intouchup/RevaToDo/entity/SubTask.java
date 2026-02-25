@@ -18,13 +18,14 @@ import java.time.LocalDateTime;
 @Table(name = "SubItem_TBL")
 @Builder
 @EntityListeners(AuditingEntityListener.class)
-public class SubItem {
+public class SubTask {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String name;
     @ManyToOne
-    private Item item;
+    @JoinColumn(name = "item_id")
+    private Task task;
     private LocalDateTime fromTime;
     private LocalDateTime toTime;
     private Boolean done;

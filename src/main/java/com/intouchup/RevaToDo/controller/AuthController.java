@@ -22,7 +22,6 @@ import java.util.Base64;
 @RequestMapping("/public")
 @RequiredArgsConstructor
 public class AuthController {
-    //    @Autowired
     private final AuthService authService;
 
     @PostMapping("/register")

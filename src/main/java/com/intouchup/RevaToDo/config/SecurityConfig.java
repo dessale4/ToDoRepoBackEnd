@@ -12,7 +12,6 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import static org.springframework.boot.security.autoconfigure.web.servlet.PathRequest.toH2Console;
 import static org.springframework.security.config.Customizer.withDefaults;
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
@@ -23,6 +22,7 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
 public class SecurityConfig {
     private final AuthenticationProvider authenticationProvider;
     private final JwtAuthFilter jwtAuthFilter;
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
@@ -40,20 +40,11 @@ public class SecurityConfig {
                                 "/swagger-ui/**",
                                 "/webjars/**",
                                 "/swagger-ui.html").permitAll()
-                        .requestMatchers(toH2Console()).permitAll() // Allow all access to the H2 console path
                         .anyRequest().authenticated() // Secure other requests
                 )
-//                .csrf(csrf -> csrf
-//                        .ignoringRequestMatchers(toH2Console()) // Disable CSRF for H2 console
-//                )
-                .sessionManagement(session->session.sessionCreationPolicy(STATELESS))
+                .sessionManagement(session -> session.sessionCreationPolicy(STATELESS))
                 .authenticationProvider(authenticationProvider)
-                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
-                .headers(headers -> headers
-                        .frameOptions(frameOptions -> frameOptions
-                                .sameOrigin() // Allow frames from the same origin (required for H2 console UI)
-                        )
-                );
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 }

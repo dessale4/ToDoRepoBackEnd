@@ -2,10 +2,7 @@ package com.intouchup.RevaToDo.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -24,9 +21,10 @@ public class Role {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+    @Column(unique = true, nullable = false)
     private String name;
     @ManyToMany(mappedBy = "roles")//mapping table will be created from User side only
-//    @JsonIgnore
+    @JsonIgnore
     private List<User> users;
     @CreatedDate
     @Column(nullable = false, updatable = false)
@@ -34,4 +32,13 @@ public class Role {
     @LastModifiedDate
     @Column(insertable = false)
     private LocalDateTime  lastModifiedDate;
+    @Override
+    public String toString() {
+        return "Role{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", createdDate=" + createdDate +
+                ", lastModifiedDate=" + lastModifiedDate +
+                '}';
+    }
 }

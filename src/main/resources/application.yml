@@ -34,4 +34,4 @@ application:
       refresh_token:
         secret_key: o4ZaO5wwpAYep8S2fkxcR79AXS6nxOW8PNfaeDjSURs=
         expiration: 259200000 #3 days
-
+  corsAllowedOrigins: '${Angular_WEB_ORIGIN:http://localhost:4200}'
