@@ -17,15 +17,18 @@ import java.util.List;
 public class TaskController {
     private final TaskService taskService;
     @PostMapping("/task")
-    public ResponseEntity<?> addTask(@RequestBody @Validated TaskDTO taskDTO, Principal principal){
-
-        List<Task> userTasks = taskService.addTask(taskDTO, principal);
-
+    public ResponseEntity<?> addTask(@RequestBody @Validated TaskDTO taskDTO, Principal principal) {
+        List<Task> userTasks = taskService.addTask(taskDTO, principal.getName());
         return ResponseEntity.ok(userTasks);
     }
     @GetMapping("/tasks")
-    public ResponseEntity<?> getUserTasks(Principal principal){
-        List<Task> userTasks = taskService.getUserTasks(principal);
+    public ResponseEntity<?> getUserTasks(Principal principal) {
+        List<Task> userTasks = taskService.getUserTasks(principal.getName());
         return ResponseEntity.ok(userTasks);
+    }
+    @DeleteMapping("/deleteTask")
+    public ResponseEntity<?> deleteTask(@RequestParam String taskId) {
+        taskService.deleteTask(Integer.valueOf(taskId));
+        return ResponseEntity.ok("Task Deleted Successfully");
     }
 }

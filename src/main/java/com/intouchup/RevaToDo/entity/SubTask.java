@@ -1,5 +1,6 @@
 package com.intouchup.RevaToDo.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,7 +25,8 @@ public class SubTask {
     private Integer id;
     private String name;
     @ManyToOne
-    @JoinColumn(name = "item_id")
+    @JoinColumn(name = "task_id")
+    @JsonIgnore//Prevents cyclic dependence during object serialization using @ResponseBody in an api return
     private Task task;
     private LocalDateTime fromTime;
     private LocalDateTime toTime;
@@ -35,4 +37,16 @@ public class SubTask {
     @LastModifiedDate
     @Column(insertable = false)
     private LocalDateTime  lastModifiedDate;
+    @Override
+    public String toString() {
+        return "SubTask{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", fromTime=" + fromTime +
+                ", toTime=" + toTime +
+                ", done=" + done +
+                ", createdDate=" + createdDate +
+                ", lastModifiedDate=" + lastModifiedDate +
+                '}';
+    }
 }

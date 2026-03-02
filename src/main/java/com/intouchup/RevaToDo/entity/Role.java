@@ -24,7 +24,7 @@ public class Role {
     @Column(unique = true, nullable = false)
     private String name;
     @ManyToMany(mappedBy = "roles")//mapping table will be created from User side only
-    @JsonIgnore
+    @JsonIgnore//Prevents cyclic dependence during object serialization using @ResponseBody in an api return
     private List<User> users;
     @CreatedDate
     @Column(nullable = false, updatable = false)

@@ -8,9 +8,9 @@ import com.intouchup.RevaToDo.reqDTO.TaskDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.security.Principal;
 import java.util.List;
 
 @Service
@@ -20,21 +20,28 @@ public class TaskService {
     private final TaskRepository taskRepository;
     private final UserRepository userRepository;
 
-    public List<Task> addTask(TaskDTO taskDTO, Principal principal) {
-        User loggedUser = userRepository.findByEmail(principal.getName()).orElseThrow(() -> new UsernameNotFoundException("Account not Found"));
+    public List<Task> addTask(TaskDTO taskDTO, String email) {
+        User loggedUser = userRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("Account not Found"));
         Task newTask = Task.builder()
                 .name(taskDTO.getName())
                 .category(taskDTO.getCategory())
                 .fromTime(taskDTO.getFromTime())
                 .toTime(taskDTO.getToTime())
                 .owner(loggedUser)
+                .done(false)
                 .build();
         taskRepository.save(newTask);
-        return getUserTasks(principal);
+        return getUserTasks(email);
 
     }
 
-    public List<Task> getUserTasks(Principal principal){
-        return taskRepository.findByOwnerEmail(principal.getName());
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public List<Task> getUserTasks(String userEmail) {
+        List<Task> taskList = taskRepository.findByOwnerEmail(userEmail);
+        return taskList;
+    }
+    public void deleteTask(Integer taskId){
+        Task taskTobeDeleted = taskRepository.findById(taskId).orElseThrow(() -> new RuntimeException("Task not found."));
+        taskRepository.delete(taskTobeDeleted);
     }
 }

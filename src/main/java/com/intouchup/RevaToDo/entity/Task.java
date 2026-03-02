@@ -1,5 +1,6 @@
 package com.intouchup.RevaToDo.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -27,6 +28,7 @@ public class Task {
     private String category;
     @ManyToOne
     @JoinColumn(name = "user_id")
+    @JsonIgnore//Prevents cyclic dependence during object serialization using @ResponseBody in an api return
     private User owner;
     @OneToMany(mappedBy = "task", cascade = CascadeType.ALL)
 //    @JsonManagedReference //to prevent cyclic dependence
@@ -40,4 +42,19 @@ public class Task {
     @LastModifiedDate
     @Column(insertable = false)
     private LocalDateTime  lastModifiedDate;
+
+    @Override
+    public String toString() {
+        return "Task{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", category='" + category + '\'' +
+                ", subTasks=" + subTasks +
+                ", fromTime=" + fromTime +
+                ", toTime=" + toTime +
+                ", done=" + done +
+                ", createdDate=" + createdDate +
+                ", lastModifiedDate=" + lastModifiedDate +
+                '}';
+    }
 }

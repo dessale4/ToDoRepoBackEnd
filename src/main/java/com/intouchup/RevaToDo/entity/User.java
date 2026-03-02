@@ -50,7 +50,6 @@ public class User implements UserDetails, Principal {
     private LocalDateTime lastModifiedDate;
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<Role> roles;
-
     @Override
     public String getName() {
         return email;

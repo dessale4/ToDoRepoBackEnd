@@ -45,7 +45,7 @@ public class AuthController {
         String encodedKeyJJWT = Encoders.BASE64.encode(rawData);
 
 // Print the key (for development/debugging - do not do this in production)
-        System.out.println("Secret key (Base64 encoded): " + encodedKey);
+//        System.out.println("Secret key (Base64 encoded): " + encodedKey);
         return ResponseEntity.ok(encodedKeyJJWT);
     }
 
