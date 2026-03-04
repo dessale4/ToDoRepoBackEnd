@@ -26,6 +26,11 @@ public class TaskController {
         List<Task> userTasks = taskService.getUserTasks(principal.getName());
         return ResponseEntity.ok(userTasks);
     }
+    @PutMapping("/editTask")
+    public ResponseEntity<?> editTask(@RequestBody @Validated TaskDTO taskDTO, @RequestParam String taskId, Principal principal) {
+        taskService.editTask(taskDTO, Integer.valueOf(taskId), principal.getName());
+        return ResponseEntity.ok("Task Edited Successfully");
+    }
     @DeleteMapping("/deleteTask")
     public ResponseEntity<?> deleteTask(@RequestParam String taskId) {
         taskService.deleteTask(Integer.valueOf(taskId));

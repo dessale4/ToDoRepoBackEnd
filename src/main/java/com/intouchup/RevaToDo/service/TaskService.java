@@ -44,4 +44,13 @@ public class TaskService {
         Task taskTobeDeleted = taskRepository.findById(taskId).orElseThrow(() -> new RuntimeException("Task not found."));
         taskRepository.delete(taskTobeDeleted);
     }
+
+    public void editTask(TaskDTO taskDTO, Integer taskId, String name) {
+        Task existingTask = taskRepository.findById(taskId).orElseThrow(()-> new RuntimeException("Task not found"));
+        existingTask.setName(taskDTO.getName());
+        existingTask.setCategory(taskDTO.getCategory());
+        existingTask.setFromTime(taskDTO.getFromTime());
+        existingTask.setToTime(taskDTO.getToTime());
+        taskRepository.save(existingTask);
+    }
 }
